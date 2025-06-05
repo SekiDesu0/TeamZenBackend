@@ -1,0 +1,11 @@
+Credenciales:
+TeamZen
+admin1234
+
+para ejecutar el proyecto debes:
+tener instalado miniconda
+
+desde el cmd de miniconda acceder a la carpeta en la que clonaste el repositorio
+crear un env, activarlo y
+ejecutar en el cmd pip install -r requirements.txt
+usar el cmd de miniconda para el proyecto, hacer makemigrations, migrate, runserver, etc.
