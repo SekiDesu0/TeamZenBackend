@@ -9,3 +9,9 @@ desde el cmd de miniconda acceder a la carpeta en la que clonaste el repositorio
 crear un env, activarlo y
 ejecutar en el cmd pip install -r requirements.txt
 usar el cmd de miniconda para el proyecto, hacer makemigrations, migrate, runserver, etc.
+
+
+conda create --name "nombre del venv" python=3.11
+conda activate venv
+pip install -r requirements.txt
+python manage.py runserver
