@@ -7,7 +7,7 @@ class User(AbstractUser):
         ('MANAGER', 'Manager'),
         ('MEMBER', 'Member'),
     )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='MEMBER')
     is_active = models.BooleanField(default=True)
 
 class Organization(models.Model):
