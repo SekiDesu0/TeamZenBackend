@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     ROLE_CHOICES = (
-        ('ADMIN', 'Admin'),
+        ('ADMIN', 'Admin',),
         ('MANAGER', 'Manager'),
         ('MEMBER', 'Member'),
     )
@@ -18,6 +18,7 @@ class Team(models.Model):
     name = models.CharField(max_length=255)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'role': 'MANAGER'})
+    members = models.ManyToManyField(User, related_name='teams', blank=True)
 
 class TeamMembership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
