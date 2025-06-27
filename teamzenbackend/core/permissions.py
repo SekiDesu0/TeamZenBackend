@@ -1,33 +1,44 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+from .models import Team
+
+class IsAdminOrReadOnly(BasePermission):
+    """
+    Allows access only to admin users.
+    """
+    def has_permission(self, request, view):
+        return request.user and request.user.is_staff
 
 class IsTeamManager(BasePermission):
     """
-    Allows access only to managers of the team.
+    Allows access only to team managers.
     """
-
     def has_permission(self, request, view):
-        # Allow read-only access for authenticated users
-        if request.method in ['GET', 'HEAD', 'OPTIONS']:
-            return request.user.is_authenticated
+        return request.user and request.user.role == 'MANAGER'
 
-        # For write operations, check if the user is a manager of the target team
-        return request.user.role == 'MANAGER'
-
+class IsOwnerOrTeamManager(BasePermission):
+    """
+    Allows access to an object only if the user is the owner of the object or a manager of the team.
+    """
     def has_object_permission(self, request, view, obj):
-        """
-        Called when modifying specific objects.
-        obj is a User instance being accessed or modified.
-        """
         if request.user.role == 'ADMIN':
             return True
+        if obj.user == request.user:
+            return True
+        if request.user.role == 'MANAGER':
+            # Check if the user (obj) is in a team managed by the request.user
+            for team in Team.objects.filter(manager=request.user):
+                if obj.user in team.members.all():
+                    return True
+        return False
 
-        if request.user.role != 'MANAGER':
-            return False
-
-        # # Check if the user (obj) belongs to a team managed by the request.user
-        # managed_teams = request.user.managed_teams.all()
-        # for team in managed_teams:
-        #     if obj in team.members.all():
-        #         return True
-
+class IsTeamMember(BasePermission):
+    """
+    Allows read-only access to users who are in the same team.
+    """
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            # Check if the user (obj) is in the same team as the request.user
+            for team in Team.objects.filter(members=request.user):
+                if obj in team.members.all():
+                    return True
         return False

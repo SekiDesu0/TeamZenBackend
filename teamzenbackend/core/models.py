@@ -17,7 +17,7 @@ class Organization(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=255)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'role': 'MANAGER'})
+    manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'role': 'MANAGER'}, related_name='managed_teams')
     members = models.ManyToManyField(User, related_name='teams', blank=True)
 
 class TeamMembership(models.Model):
